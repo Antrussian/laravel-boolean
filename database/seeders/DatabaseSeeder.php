@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\CocktailsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,24 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-        {
-            $this->call(TechnologiesTableSeeder::class);
-        }
-
-
-    $this->call(TypesTableSeeder::class);
-
-        $this->call([
-            FumettiSeeder::class,
-            // PostSeeder::class,
-            // CommentSeeder::class,
-        ]);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        $this->call([
+            CocktailsSeeder::class,
+
+        ]);
+
+        // test commento
     }
 }

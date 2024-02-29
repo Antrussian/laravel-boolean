@@ -76,16 +76,12 @@ class LocalFilesystemAdapter implements FilesystemAdapter, ChecksumProvider
         private int $linkHandling = self::DISALLOW_LINKS,
         MimeTypeDetector $mimeTypeDetector = null,
         bool $lazyRootCreation = false,
-        bool $useInconclusiveMimeTypeFallback = false,
     ) {
         $this->prefixer = new PathPrefixer($location, DIRECTORY_SEPARATOR);
         $visibility ??= new PortableVisibilityConverter();
         $this->visibility = $visibility;
         $this->rootLocation = $location;
-        $this->mimeTypeDetector = $mimeTypeDetector ?? new FallbackMimeTypeDetector(
-            detector: new FinfoMimeTypeDetector(),
-            useInconclusiveMimeTypeFallback: $useInconclusiveMimeTypeFallback,
-        );
+        $this->mimeTypeDetector = $mimeTypeDetector ?? new FallbackMimeTypeDetector(new FinfoMimeTypeDetector());
 
         if ( ! $lazyRootCreation) {
             $this->ensureRootDirectoryExists();
@@ -99,7 +95,6 @@ class LocalFilesystemAdapter implements FilesystemAdapter, ChecksumProvider
         }
 
         $this->ensureDirectoryExists($this->rootLocation, $this->visibility->defaultForDirectories());
-        $this->rootLocationIsSetup = true;
     }
 
     public function write(string $path, string $contents, Config $config): void
@@ -277,7 +272,7 @@ class LocalFilesystemAdapter implements FilesystemAdapter, ChecksumProvider
 
         $visibility = $config->get(
             Config::OPTION_VISIBILITY,
-            $config->get(Config::OPTION_RETAIN_VISIBILITY, true)
+            $config->get('retain_visibility', true)
                 ? $this->visibility($source)->visibility()
                 : null,
         );
